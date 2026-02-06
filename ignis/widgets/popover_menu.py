@@ -56,6 +56,7 @@ class PopoverMenu(Gtk.PopoverMenu, BaseWidget):
         Gtk.PopoverMenu.__init__(self)
         self._model: IgnisMenuModel | None = None
         BaseWidget.__init__(self, visible=False, **kwargs)
+        self._nested = False
 
     @IgnisProperty
     def model(self) -> IgnisMenuModel | None:
@@ -71,6 +72,22 @@ class PopoverMenu(Gtk.PopoverMenu, BaseWidget):
 
         self._model = value
         self.set_menu_model(value.gmenu)
+    
+    @IgnisProperty
+    def nested(self) -> bool:
+        """
+        Whether or not submenus are presented as traditional, nested popovers.
+        """
+        return self._nested
+    
+    @nested.setter
+    def nested(self, value: bool) -> None:
+        if value:
+            self.set_flags(Gtk.PopoverMenuFlags.NESTED)
+        else:
+            self.set_flags(Gtk.PopoverMenuFlags.SLIDING)
+        self._nested = value
+
 
     def __del__(self) -> None:
         if self._model:
